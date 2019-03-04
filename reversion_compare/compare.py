@@ -193,6 +193,7 @@ class CompareObject:
                 missing_objects_dict = {
                     force_text(rel.pk): rel
                     for rel in related_model.objects.filter(pk__in=potentially_missing_ids).iterator()
+                    if reversion.is_registered(rel.__class__)
                 }
 
         if is_reverse:
