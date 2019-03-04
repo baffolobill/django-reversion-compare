@@ -17,6 +17,7 @@ from django.db import models
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 
+import reversion
 from reversion.models import Version
 from reversion.revisions import _get_options
 
@@ -203,7 +204,10 @@ class CompareObject:
             }
 
             # shift query to database
-            deleted = list(Version.objects.filter(revision=old_revision).get_deleted(related_model))
+            if reversion.is_registered(related_model):
+                deleted = list(Version.objects.filter(revision=old_revision).get_deleted(related_model))
+            else:
+                deleted = []
 
         return versions, missing_objects_dict, deleted
 
